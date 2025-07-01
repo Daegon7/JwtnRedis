@@ -20,7 +20,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
-    private final StringRedisTemplate redisTemplate; // 🔥 Redis 주입
+    private final StringRedisTemplate redisTemplate;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        // 필터 제외 경로 설정
+        return path.startsWith("/auth/logout");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

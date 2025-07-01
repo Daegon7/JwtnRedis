@@ -3,12 +3,19 @@ package com.example.auth.service;
 import com.example.auth.dto.LoginRequest;
 import com.example.auth.dto.TokenResponse;
 import com.example.auth.jwt.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,15 +37,25 @@ public class AuthService {
     }
 
     public void logout(String accessToken) {
-        String username = jwtTokenProvider.getUsername(accessToken); // 토큰에서 사용자 이름 추출
-        String jti = jwtTokenProvider.extractJti(accessToken); // 토큰의 고유 ID
-        Duration ttl = jwtTokenProvider.getRemainingTTL(accessToken); // 만료까지 남은 시간
+        try {
+            String username = jwtTokenProvider.getUsername(accessToken);
+            String jti = jwtTokenProvider.extractJti(accessToken);
+            Duration ttl = jwtTokenProvider.getRemainingTTL(accessToken);
 
-        // Refresh Token 삭제
-        redisTemplate.delete("refresh:" + username);
+            redisTemplate.delete("refresh:" + username);
 
-        // Access Token 블랙리스트 등록
-        redisTemplate.opsForValue().set("blacklist:" + jti, "true", ttl);
+            if (ttl != null && !ttl.isNegative() && !ttl.isZero()) {
+                redisTemplate.opsForValue().set("blacklist:" + jti, "true", ttl);
+            } else {
+                redisTemplate.opsForValue().set("blacklist:" + jti, "true", Duration.ofHours(1));
+            }
+
+        } catch (Exception e) {
+            log.warn("로그아웃 중 예외 발생: {}", e.getMessage());
+            // 예외를 전파하지 않고 무시하거나, 필요 시 커스텀 예외로 감싸서 throw
+        }
     }
+
+
 
 }
