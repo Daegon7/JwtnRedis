@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.time.Duration;
+
 
 @Component
 public class JwtTokenProvider {
@@ -42,4 +44,28 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public String extractJti(String token) {
+        return parseClaims(token).getId(); // JTI 추출
+    }
+
+    public Duration getRemainingTTL(String token) {
+        Date expiration = parseClaims(token).getExpiration();
+        long now = System.currentTimeMillis();
+        return Duration.ofMillis(expiration.getTime() - now);
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private String generateJti() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
+
 }

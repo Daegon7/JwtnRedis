@@ -28,4 +28,17 @@ public class AuthService {
 
         return new TokenResponse(accessToken, refreshToken);
     }
+
+    public void logout(String accessToken) {
+        String username = jwtTokenProvider.getUsername(accessToken); // 토큰에서 사용자 이름 추출
+        String jti = jwtTokenProvider.extractJti(accessToken); // 토큰의 고유 ID
+        Duration ttl = jwtTokenProvider.getRemainingTTL(accessToken); // 만료까지 남은 시간
+
+        // Refresh Token 삭제
+        redisTemplate.delete("refresh:" + username);
+
+        // Access Token 블랙리스트 등록
+        redisTemplate.opsForValue().set("blacklist:" + jti, "true", ttl);
+    }
+
 }
