@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
+                                "/user/**",
                                 "/api/noAuth/**",
                                 "/auth/refresh",
                                 "/webjars/**",
