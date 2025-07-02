@@ -1,0 +1,10 @@
+type UserDto {
+    id: ID
+    name: String
+    email: String
+    description: String
+}
+
+type Query {
+    users: [UserDto]
+}

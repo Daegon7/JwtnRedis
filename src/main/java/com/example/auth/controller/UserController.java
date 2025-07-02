@@ -3,10 +3,13 @@ package com.example.auth.controller;
 import com.example.auth.dto.UserDto;
 import com.example.auth.dto.UserProfileResponse;
 import com.example.auth.security.CustomUserDetails;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +17,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.*;
 
+@Slf4j
 @Tag(name = "User", description = "사용자 관련 API")
 @RestController
 @RequestMapping("/user")
@@ -36,92 +42,63 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "GRAPHQL 데이터 송수신", description = "GRAPHQL 데이터 송수신")
-    @GetMapping("/graphql1")
-    public ResponseEntity<String> graphql1() {
+    @Operation(summary = "GRAPHQL → JSON 문자열 응답", description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환")
+    @GetMapping("/graphql")
+    public ResponseEntity<List<UserDto>> graphql() {
 
-        String graphQLQuery = "{ hello  hello2 }";
-
-        // GraphQL 요청 객체 생성
-        Map<String, String> body = Map.of("query", graphQLQuery);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
-
-        // GraphQL 엔드포인트 호출
-        String graphqlEndpoint = "http://localhost:8082/graphql";
-        ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
-
-        String jsonString = response.getBody().toPrettyString();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(jsonString);
-    }
-
-    @Operation(summary = "GRAPHQL 데이터 송수신", description = "GRAPHQL 데이터 송수신")
-    @GetMapping("/graphql2")
-    public ResponseEntity<String> graphql2() {
-
-        String graphQLQuery = "{ items { name description } }";
-
-        // GraphQL 요청 객체 생성
-        Map<String, String> body = Map.of("query", graphQLQuery);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
-
-        // GraphQL 엔드포인트 호출
-        String graphqlEndpoint = "http://localhost:8082/graphql";
-        ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
-
-        String jsonString = response.getBody().toPrettyString();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(jsonString);
-    }
-
-    @Operation(summary = "GRAPHQL 데이터 송수신", description = "GRAPHQL 데이터 송수신")
-    @GetMapping("/graphql3")
-    public ResponseEntity<UserDto> graphql3() {
         // GraphQL 쿼리 정의
-        String graphQLQuery = "{ items { name description } }";
+        String graphQLQuery = "{ users { id name email description } }";
 
-
-        // GraphQL 요청 객체 생성
+        // 요청 객체 구성
         Map<String, String> body = Map.of("query", graphQLQuery);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
 
-        // GraphQL 엔드포인트 호출
-        String graphqlEndpoint = "http://localhost:8082/graphql";
+        // GraphQL 서버 주소
+        String graphqlEndpoint = "http://localhost:8081/graphql";
         ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
+
+        log.debug(response.getBody().toPrettyString());
+
+        /*
+        public ResponseEntity<String> graphql() {
+        // 전체 응답 JSON을 문자열로 반환
+        String jsonString = response.getBody().toPrettyString();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(jsonString);
+        */
 
         // JSON 파싱
-        JsonNode itemsNode = response.getBody().path("data").path("items");
-
-        System.out.println(response.getBody().toPrettyString());
+        JsonNode itemsNode = response.getBody().path("data").path("users");
 
         // 배열에서 첫 번째 아이템 꺼내기
         if (itemsNode.isArray() && itemsNode.size() > 0) {
-            JsonNode firstItem = itemsNode.get(0);
+//            List<UserDto> users = new ArrayList<>();
+//
+//            for (JsonNode node : itemsNode) {
+//                UserDto user = new UserDto();
+//                user.setId(node.path("id").asText(null));
+//                user.setName(node.path("name").asText(null));
+//                user.setEmail(node.path("email").asText(null));
+//                user.setDescription(node.path("description").asText(null));
+//                users.add(user);
+//            }
 
-            UserDto user = new UserDto();
-            user.setName(firstItem.path("name").asText(null));
-            user.setDescription(firstItem.path("description").asText(null));
+            ObjectMapper mapper = new ObjectMapper();
+            List<UserDto> users = mapper.convertValue(
+                    itemsNode,
+                    new TypeReference<List<UserDto>>() {}
+            );
 
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(users);
         } else {
             return ResponseEntity.notFound().build();
         }
+
+
     }
 
 }

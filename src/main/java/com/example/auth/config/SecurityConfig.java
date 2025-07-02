@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/user/**",
+                                "/graphql",
                                 "/api/noAuth/**",
                                 "/auth/refresh",
                                 "/webjars/**",
