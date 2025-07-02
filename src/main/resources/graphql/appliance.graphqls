@@ -1,0 +1,11 @@
+type ApplianceDto {
+    id: ID
+    name: String
+    brand: String
+    price: Int
+    description: String
+}
+
+extend type Query {
+    appliances: [ApplianceDto]
+}
