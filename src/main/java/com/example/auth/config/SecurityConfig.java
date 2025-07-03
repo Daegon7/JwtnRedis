@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/user/**",
                                 "/graphql",
-                                "/api/noAuth/**",
+                                "/api/**",
                                 "/auth/refresh",
                                 "/webjars/**",
                                 "/",
