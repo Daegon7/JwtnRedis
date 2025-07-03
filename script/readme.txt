@@ -5,6 +5,12 @@
 - Redis 설치
 --docker pull redis
 --docker run -d --name my-redis-secure -p 6379:6379 redis redis-server --requirepass "yourStrongPassword"
+- 넥서스 설치
+-- docker pull sonatype/nexus3
+-- docker run -d   --name nexus   -p 8082:8081   -v nexus-data:/nexus-data   sonatype/nexus3
+- Jenkins 설치
+-- docker pull jenkins/jenkins:lts
+-- docker run -d   --name jenkins   -p 8083:8080    -p 50000:50000   -v jenkins_home:/var/jenkins_home   jenkins/jenkins:lts
 
 Intellij VM설정
 - --sun-misc-unsafe-memory-access=allow
