@@ -7,4 +7,4 @@
 --docker run -d --name my-redis-secure -p 6379:6379 redis redis-server --requirepass "yourStrongPassword"
 
 Intellij VM설정
---sun-misc-unsafe-memory-access=allow
+- --sun-misc-unsafe-memory-access=allow
