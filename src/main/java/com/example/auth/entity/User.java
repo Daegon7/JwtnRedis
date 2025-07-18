@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "USERS")  // MSSQL에 만든 테이블명 대소문자 구분 없음
+@Table(name = "users") // MySQL은 대소문자 구분하므로 소문자 사용 권장
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,4 +25,3 @@ public class User {
     @Column(length = 5)
     private String role;
 }
-

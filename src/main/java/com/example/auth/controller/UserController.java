@@ -32,7 +32,7 @@ public class UserController {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "프로필 조회", description = "현재 로그인한 사용자의 프로필을 반환합니다.")
+    @Operation(summary = "프로필 조회", description = "/auth/login 에서 access token값 복사 붙이기 후 에 실행")
     @GetMapping("/profile")
     public UserProfileResponse getProfile(@AuthenticationPrincipal CustomUserDetails user) {
         return new UserProfileResponse(
@@ -56,7 +56,7 @@ public class UserController {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
 
         // GraphQL 서버 주소
-        String graphqlEndpoint = "http://localhost:8081/graphql";
+        String graphqlEndpoint = "http://localhost:9081/graphql";
         ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
 
         log.debug(response.getBody().toPrettyString());
