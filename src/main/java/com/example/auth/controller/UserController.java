@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @Operation(summary = "GRAPHQL → JSON 문자열 응답", description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환")
-    @GetMapping("/graphql")
+    @PostMapping("/graphql")
     public ResponseEntity<List<UserDto>> graphql() {
 
         // GraphQL 쿼리 정의
