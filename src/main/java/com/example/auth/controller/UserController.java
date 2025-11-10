@@ -23,13 +23,11 @@ import java.util.Map;
 
 import org.springframework.http.*;
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-
 @Slf4j
 @Tag(name = "User", description = "사용자 관련 API")
 @RestController
 @RequestMapping("/user")
-public class UserController implements GraphQLQueryResolver{
+public class UserController{
 
     private final RestTemplate restTemplate = new RestTemplate();
 
