@@ -56,7 +56,7 @@ public class UserController {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
 
         // GraphQL 서버 주소
-        String graphqlEndpoint = "http://localhost:9081/graphql";
+        String graphqlEndpoint = "http://localhost:8081/graphql";
         ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
 
         log.debug(response.getBody().toPrettyString());
