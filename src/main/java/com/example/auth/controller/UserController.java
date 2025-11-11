@@ -48,10 +48,11 @@ public class UserController{
 
     @Operation(summary = "GRAPHQL → JSON 문자열 응답", description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환")
     @PostMapping("/graphql")
-    public ResponseEntity<Map<String, Object>> graphql(HttpServletRequest request1) {
+    public ResponseEntity<JsonNode> graphql(HttpServletRequest request) {
 
+        // 요청 Body 읽기
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = request1.getReader()) {
+        try (BufferedReader reader = request.getReader()) {
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line.trim()).append(" ");
@@ -64,40 +65,22 @@ public class UserController{
         JSONObject obj = new JSONObject(sb.toString());
         String query = obj.getString("query");
 
-        // GraphQL 쿼리 정의
-        //"query { users(where: { id: \"test1\", name: \"test2\", email: \"test3\", description: \"description4\" }) { id name email description } }";
-        String graphQLQuery = query
-                .replaceAll("\\s+", " ")   // 모든 공백/개행을 하나의 공백으로
-                .trim();                   // 앞뒤 공백 제거
+        // GraphQL 쿼리 문자열 정리
+        String graphQLQuery = query.replaceAll("\\s+", " ").trim();
 
         // 요청 객체 구성
         Map<String, String> body = Map.of("query", graphQLQuery);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
 
         // GraphQL 서버 주소
         String graphqlEndpoint = "http://localhost:8081/graphql";
         ResponseEntity<JsonNode> response =
-                restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
+                restTemplate.postForEntity(graphqlEndpoint, entity, JsonNode.class);
 
-        log.debug(response.getBody().toPrettyString());
-
-        // 응답 파싱
-        JsonNode usersNode = response.getBody().get("data").get("users");
-
-        ObjectMapper mapper = new ObjectMapper();
-        List<UserDto> users = mapper.convertValue(
-                usersNode,
-                new TypeReference<List<UserDto>>() {}
-        );
-
-        // ✅ GraphQL 표준 응답 구조로 감싸기
-        Map<String, Object> data = Map.of("users", users);
-        Map<String, Object> result = Map.of("data", data);
-
-        return ResponseEntity.ok(result);
-
+        // ✅ 응답을 그대로 반환 (프록시 역할)
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
 }
