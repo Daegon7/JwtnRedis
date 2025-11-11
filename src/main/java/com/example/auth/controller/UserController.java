@@ -50,6 +50,7 @@ public class UserController{
         );
     }
 
+    //{ "query": "\n        query {\n          appliances(where: {\n            id: \"test1\"         }) {\n            id\n            name\n            description\n          }\n        }\n      " }
     @Operation(
             summary = "GRAPHQL Proxy→ JSON 문자열 응답",
             description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환",
