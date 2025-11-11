@@ -48,6 +48,7 @@ dependencies {
 
 	// JSON
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.json:json:20231013'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -62,7 +63,6 @@ dependencies {
 
     // GraphQL
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
-
 
 }
 

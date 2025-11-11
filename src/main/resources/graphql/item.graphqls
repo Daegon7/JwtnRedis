@@ -1,4 +1,11 @@
-type UserDto {
+type User {
+    id: ID
+    name: String
+    email: String
+    description: String
+}
+
+input UserInput {
     id: ID
     name: String
     email: String
@@ -6,5 +13,5 @@ type UserDto {
 }
 
 type Query {
-    users: [UserDto]
+    users(where: UserInput): [User]
 }

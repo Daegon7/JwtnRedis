@@ -1,6 +1,7 @@
 package com.example.auth.controller;
 
 import com.example.auth.dto.UserDto;
+import com.example.auth.dto.UserInput;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,15 @@ import java.util.List;
 public class GraphQLUserController {
 
     @QueryMapping
-    public List<UserDto> users() {
+    public List<UserDto> users(@Argument UserInput where) {
+
+        // React에서 받은 값 출력
+        System.out.println("id: " + where.getId());
+        System.out.println("name: " + where.getName());
+        System.out.println("email: " + where.getEmail());
+        System.out.println("description: " + where.getDescription());
+
+
         List<UserDto> list = new ArrayList<>();
 
         UserDto u1 = new UserDto();

@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +48,27 @@ public class UserController{
 
     @Operation(summary = "GRAPHQL → JSON 문자열 응답", description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환")
     @PostMapping("/graphql")
-    public ResponseEntity<List<UserDto>> graphql() {
+    public ResponseEntity<Map<String, Object>> graphql(HttpServletRequest request1) {
+
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = request1.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line.trim()).append(" ");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // JSON 파싱
+        JSONObject obj = new JSONObject(sb.toString());
+        String query = obj.getString("query");
 
         // GraphQL 쿼리 정의
-        String graphQLQuery = "{ users { id name email description } }";
+        //"query { users(where: { id: \"test1\", name: \"test2\", email: \"test3\", description: \"description4\" }) { id name email description } }";
+        String graphQLQuery = query
+                .replaceAll("\\s+", " ")   // 모든 공백/개행을 하나의 공백으로
+                .trim();                   // 앞뒤 공백 제거
 
         // 요청 객체 구성
         Map<String, String> body = Map.of("query", graphQLQuery);
@@ -57,47 +78,25 @@ public class UserController{
 
         // GraphQL 서버 주소
         String graphqlEndpoint = "http://localhost:8081/graphql";
-        ResponseEntity<JsonNode> response = restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
+        ResponseEntity<JsonNode> response =
+                restTemplate.postForEntity(graphqlEndpoint, request, JsonNode.class);
 
         log.debug(response.getBody().toPrettyString());
 
-        /*
-        public ResponseEntity<String> graphql() {
-        // 전체 응답 JSON을 문자열로 반환
-        String jsonString = response.getBody().toPrettyString();
+        // 응답 파싱
+        JsonNode usersNode = response.getBody().get("data").get("users");
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(jsonString);
-        */
+        ObjectMapper mapper = new ObjectMapper();
+        List<UserDto> users = mapper.convertValue(
+                usersNode,
+                new TypeReference<List<UserDto>>() {}
+        );
 
-        // JSON 파싱
-        JsonNode itemsNode = response.getBody().path("data").path("users");
+        // ✅ GraphQL 표준 응답 구조로 감싸기
+        Map<String, Object> data = Map.of("users", users);
+        Map<String, Object> result = Map.of("data", data);
 
-        // 배열에서 첫 번째 아이템 꺼내기
-        if (itemsNode.isArray() && itemsNode.size() > 0) {
-//            List<UserDto> users = new ArrayList<>();
-//
-//            for (JsonNode node : itemsNode) {
-//                UserDto user = new UserDto();
-//                user.setId(node.path("id").asText(null));
-//                user.setName(node.path("name").asText(null));
-//                user.setEmail(node.path("email").asText(null));
-//                user.setDescription(node.path("description").asText(null));
-//                users.add(user);
-//            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            List<UserDto> users = mapper.convertValue(
-                    itemsNode,
-                    new TypeReference<List<UserDto>>() {}
-            );
-
-            return ResponseEntity.ok(users);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
+        return ResponseEntity.ok(result);
 
     }
 
