@@ -57,9 +57,23 @@ public class UserController{
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(
-                                    example = "{\n" +
-                                            "  \"query\": \"query { users(where: { id: \\\"test1\\\", name: \\\"test2\\\", email: \\\"test3\\\", description: \\\"description4\\\" }) { id name email description } }\"\n" +
-                                            "}"
+                                      example = "{\n" +
+                                                "  \"query\": \"\\n" +
+                                                "        query {\\n" +
+                                                "          users(where: {\\n" +
+                                                "            id: \\\"test1\\\",\\n" +
+                                                "            name: \\\"test2\\\",\\n" +
+                                                "            email: \\\"test3\\\",\\n" +
+                                                "            description: \\\"description4\\\"\\n" +
+                                                "          }) {\\n" +
+                                                "            id\\n" +
+                                                "            name\\n" +
+                                                "            email\\n" +
+                                                "            description\\n" +
+                                                "          }\\n" +
+                                                "        }\\n" +
+                                                "      \"\n" +
+                                                "}"
                             )
                     )
             )
