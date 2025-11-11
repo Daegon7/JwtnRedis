@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/user/**",
+                                "/graphql/proxy",
                                 "/graphql",
                                 "/api/**",
                                 "/auth/refresh",

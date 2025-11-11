@@ -10,11 +10,11 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
-public class GraphQLController {
+public class GraphqlUserController {
 
     private final UserService userService;
 
-    public GraphQLController(UserService userService) {
+    public GraphqlUserController(UserService userService) {
         this.userService = userService;
     }
 

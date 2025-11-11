@@ -7,10 +7,9 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.ArrayList;
 
 @Controller
-public class ApplianceController {
+public class GraphqlApplianceController {
 
     @QueryMapping(name = "appliances")
     public List<ApplianceDto> appliances(@Argument ApplianceInput where) {

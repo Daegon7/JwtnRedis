@@ -37,8 +37,6 @@ import org.springframework.http.*;
 @RequestMapping("/user")
 public class UserController{
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "프로필 조회", description = "/auth/login 에서 access token값 복사 붙이기 후 에 실행")
     @GetMapping("/profile")
@@ -48,74 +46,6 @@ public class UserController{
                 user.getEmail(),
                 user.getRole()
         );
-    }
-
-    //{ "query": "\n        query {\n          appliances(where: {\n            id: \"test1\"         }) {\n            id\n            name\n            description\n          }\n        }\n      " }
-    @Operation(
-            summary = "GRAPHQL Proxy→ JSON 문자열 응답",
-            description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                      example = "{\n" +
-                                                "  \"query\": \"\\n" +
-                                                "        query {\\n" +
-                                                "          users(where: {\\n" +
-                                                "            id: \\\"test1\\\",\\n" +
-                                                "            name: \\\"test2\\\",\\n" +
-                                                "            email: \\\"test3\\\",\\n" +
-                                                "            description: \\\"description4\\\"\\n" +
-                                                "          }) {\\n" +
-                                                "            id\\n" +
-                                                "            name\\n" +
-                                                "            email\\n" +
-                                                "            description\\n" +
-                                                "          }\\n" +
-                                                "        }\\n" +
-                                                "      \"\n" +
-                                                "}"
-                            )
-                    )
-            )
-    )
-    @PostMapping("/graphql")
-    public ResponseEntity<JsonNode> graphql(HttpServletRequest request) {
-
-        // 요청 Body 읽기
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = request.getReader()) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line.trim()).append(" ");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // JSON 파싱
-        JSONObject obj = new JSONObject(sb.toString());
-        String query = obj.getString("query");
-
-        // GraphQL 쿼리 문자열 정리
-        String graphQLQuery = query.replaceAll("\\s+", " ").trim();
-
-        // 요청 객체 구성
-        Map<String, String> body = Map.of("query", graphQLQuery);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
-
-        // GraphQL 서버 주소
-        String graphqlEndpoint = "http://localhost:8081/graphql";
-        ResponseEntity<JsonNode> response =
-                restTemplate.postForEntity(graphqlEndpoint, entity, JsonNode.class);
-
-        // 테스트
-        log.debug(response.getBody().toPrettyString());
-
-        // ✅ 응답을 그대로 반환 (프록시 역할)
-        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
 }
