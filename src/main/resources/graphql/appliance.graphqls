@@ -6,6 +6,14 @@ type ApplianceDto {
     description: String
 }
 
+input ApplianceInput {
+    id: ID
+    name: String
+    brand: String
+    price: Int
+    description: String
+}
+
 extend type Query {
-    appliances: [ApplianceDto]
+    appliances(where: ApplianceInput): [ApplianceDto]
 }

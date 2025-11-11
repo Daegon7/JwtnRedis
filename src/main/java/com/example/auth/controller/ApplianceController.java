@@ -1,6 +1,8 @@
 package com.example.auth.controller;
 
 import com.example.auth.dto.ApplianceDto;
+import com.example.auth.dto.ApplianceInput;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -10,8 +12,8 @@ import java.util.ArrayList;
 @Controller
 public class ApplianceController {
 
-    @QueryMapping
-    public List<ApplianceDto> appliances() {
+    @QueryMapping(name = "appliances")
+    public List<ApplianceDto> appliances(@Argument ApplianceInput where) {
         ApplianceDto fridge = new ApplianceDto();
         fridge.setId("A1");
         fridge.setName("Smart Refrigerator");
