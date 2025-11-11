@@ -7,6 +7,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,7 +50,20 @@ public class UserController{
         );
     }
 
-    @Operation(summary = "GRAPHQL → JSON 문자열 응답", description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환")
+    @Operation(
+            summary = "GRAPHQL → JSON 문자열 응답",
+            description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    example = "{\n" +
+                                            "  \"query\": \"query { users(where: { id: \\\"test1\\\", name: \\\"test2\\\", email: \\\"test3\\\", description: \\\"description4\\\" }) { id name email description } }\"\n" +
+                                            "}"
+                            )
+                    )
+            )
+    )
     @PostMapping("/graphql")
     public ResponseEntity<JsonNode> graphql(HttpServletRequest request) {
 
