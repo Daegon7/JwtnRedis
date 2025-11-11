@@ -51,7 +51,7 @@ public class UserController{
     }
 
     @Operation(
-            summary = "GRAPHQL → JSON 문자열 응답",
+            summary = "GRAPHQL Proxy→ JSON 문자열 응답",
             description = "UserDto 쿼리를 수행하고 순수 JSON 문자열로 반환",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
