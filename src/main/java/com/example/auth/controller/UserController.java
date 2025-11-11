@@ -79,6 +79,9 @@ public class UserController{
         ResponseEntity<JsonNode> response =
                 restTemplate.postForEntity(graphqlEndpoint, entity, JsonNode.class);
 
+        // 테스트
+        log.debug(response.getBody().toPrettyString());
+
         // ✅ 응답을 그대로 반환 (프록시 역할)
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
