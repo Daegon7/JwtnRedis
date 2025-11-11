@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class GraphQLUserController {
+public class GraphQLController {
 
     @QueryMapping
     public List<UserDto> users(@Argument UserInput where) {
