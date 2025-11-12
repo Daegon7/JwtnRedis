@@ -14,5 +14,4 @@ Intellij VM설정
 
 1. Redis & mysql 도커에서 서버 실행
 2. mysql 설치 후 테이블 생성 및 데이터 입력 (C:\workspace\gradle\JwtnRedis\script\mysql.sql)
-3. http://localhost:9081/
-4.
+3. http://localhost:8081/
