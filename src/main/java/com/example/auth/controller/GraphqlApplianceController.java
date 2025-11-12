@@ -2,10 +2,7 @@ package com.example.auth.controller;
 
 import com.example.auth.dto.ApplianceDto;
 import com.example.auth.dto.ApplianceInput;
-import com.example.auth.dto.UserDto;
-import com.example.auth.dto.UserInput;
 import com.example.auth.service.ApplianceService;
-import com.example.auth.service.UserService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
@@ -24,7 +21,9 @@ public class GraphqlApplianceController {
     @QueryMapping(name = "appliances")
     public List<ApplianceDto> appliances(@Argument ApplianceInput where) {
         // 단순히 서비스 호출만
-        return applianceService.findAppliance(where);
+        //return applianceService.findAppliance(where);
+
+        return applianceService.searchAppliances(where);
     }
 }
 

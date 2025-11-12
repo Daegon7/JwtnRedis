@@ -2,13 +2,10 @@ package com.example.auth.service;
 
 import com.example.auth.dto.ApplianceDto;
 import com.example.auth.dto.ApplianceInput;
-import com.example.auth.dto.UserDto;
-import com.example.auth.dto.UserInput;
 import com.example.auth.entity.Appliance;
 import com.example.auth.repository.ApplianceRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,5 +52,10 @@ public class ApplianceService {
 //        washer.setDescription("AI 스팀 살균 세탁기");
 //
 //        return List.of(fridge, washer);
+    }
+
+    // ✅ QueryDSL 기반 동적 검색
+    public List<ApplianceDto> searchAppliances(ApplianceInput where) {
+        return applianceRepository.searchAppliances(where);
     }
 }

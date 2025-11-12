@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	implementation 'com.mysql:mysql-connector-j:8.0.33'
 
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
@@ -64,8 +64,22 @@ dependencies {
     // GraphQL
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    annotationProcessor 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += ["$buildDir/generated/sources/annotationProcessor/java/main"]
+        }
+    }
 }
