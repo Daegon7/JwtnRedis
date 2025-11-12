@@ -3,6 +3,7 @@ package com.example.auth.service;
 import com.example.auth.dto.ApplianceDto;
 import com.example.auth.dto.ApplianceInput;
 import com.example.auth.entity.Appliance;
+import com.example.auth.mapper.ApplianceMapper;
 import com.example.auth.repository.ApplianceRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,12 @@ import java.util.stream.Collectors;
 public class ApplianceService {
 
     private final ApplianceRepository applianceRepository;
+    private final ApplianceMapper applianceMapper; // ✅ MyBatis 매퍼 추가
 
-    public ApplianceService(ApplianceRepository applianceRepository) {
+    public ApplianceService(ApplianceRepository applianceRepository,
+                            ApplianceMapper applianceMapper) {
         this.applianceRepository = applianceRepository;
+        this.applianceMapper = applianceMapper;
     }
 
     public List<ApplianceDto> findAppliance(ApplianceInput where) {
@@ -57,5 +61,15 @@ public class ApplianceService {
     // ✅ QueryDSL 기반 동적 검색
     public List<ApplianceDto> searchAppliances(ApplianceInput where) {
         return applianceRepository.searchAppliances(where);
+    }
+
+    // ✅ MyBatis 기반 전체 조회
+    public List<ApplianceDto> findAppliancesByMyBatis(ApplianceInput where) {
+        return applianceMapper.findAll();
+    }
+
+    // ✅ MyBatis 기반 단일 조회
+    public ApplianceDto findApplianceByIdMyBatis(String id) {
+        return applianceMapper.findById(id);
     }
 }

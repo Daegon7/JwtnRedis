@@ -64,11 +64,16 @@ dependencies {
     // GraphQL
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
 
+    // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     annotationProcessor 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+
+    // MyBatis
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
 }
 

@@ -23,7 +23,9 @@ public class GraphqlApplianceController {
         // 단순히 서비스 호출만
         //return applianceService.findAppliance(where);
 
-        return applianceService.searchAppliances(where);
+        //return applianceService.searchAppliances(where);
+
+        return applianceService.findAppliancesByMyBatis(where); // ✅ MyBatis 메소드로 변경
     }
 }
 
