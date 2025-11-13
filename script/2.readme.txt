@@ -92,9 +92,10 @@ kubectl describe pod <pod-name>
 | BindException: Address already in use | 포트 중복          | server.port
 | ClassNotFoundException                | 빌드 누락          | Gradle 빌드 확인
 
-
-
-
-
+POD 삭제
+kubectl get pods
+kubectl delete deployment demo-app
+kubectl delete service demo-app
+kubectl delete -f k8s/demo-app.yaml
 
 
