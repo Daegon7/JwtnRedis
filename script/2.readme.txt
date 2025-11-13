@@ -1,0 +1,17 @@
+쿠버네티스 설치
+- powershell 관리자 권한으로 실행
+- C:\minikube\minikube.exe 복사
+- 윈도우 > 시스템속성 > 환경변수 > 시스템 변수 > path 추가 (C:\minikube)
+- powershell 껐다가 다시 켜기
+- PS C:\intelij_workspace> minikube start --driver=docker (실행-> 도커에 Minikube 클러스터 시작)
+
+
+도커이미지 build and push
+PS C:\intelij_workspace\JwtnRedis> docker build -t daegon7/demo-app .
+PS C:\intelij_workspace\JwtnRedis> docker login
+PS C:\intelij_workspace\JwtnRedis> docker push daegon7/demo-app
+
+Minikube Start
+PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/deployment.yaml
+PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/service.yaml
+PS C:\intelij_workspace\JwtnRedis> minikube service demo-app-service
