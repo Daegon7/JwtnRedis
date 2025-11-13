@@ -16,6 +16,7 @@ PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/deployment.yaml
 PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/service.yaml
 PS C:\intelij_workspace\JwtnRedis> minikube service demo-app-service
 
+------------------------------------------------------------------
 
 소스 수정 후 재배포 전체 과정
 1. 소스 수정
@@ -36,6 +37,8 @@ kubectl apply -f k8s/deployment.yaml
 kubectl rollout restart deployment demo-app
 6. 서비스 확인
 minikube service demo-app-service
+
+------------------------------------------------------------------
 
 📋 Kubernetes 리소스 목록 보기
 | 리소스 종류                 |
