@@ -36,3 +36,46 @@ kubectl apply -f k8s/deployment.yaml
 kubectl rollout restart deployment demo-app
 6. 서비스 확인
 minikube service demo-app-service
+
+📋 Kubernetes 리소스 목록 보기
+| 리소스 종류                 |
+| 전체 리소스                 | kubectl get all
+| 파드 목록                  | kubectl get pods
+| 서비스 목록                 | kubectl get svckubectl get services
+| 디플로이먼트 목록            | kubectl get deployments
+| 네임스페이스 목록            | kubectl get namespaces
+| 컨테이너 이미지 포함 파드 상세 | kubectl describe pod <pod-name>
+
+📄 파드 로그 확인
+- kubectl get pods            (예: NAME                          READY   STATUS             RESTARTS   AGE
+                                  demo-app-7c8d9f9d8f-xyz       0/1     CrashLoopBackOff   3          2m   )
+- kubectl logs <pod-name>     (예: kubectl logs demo-app-7c8d9f9d8-xyz)
+
+- 실시간 로그 보기
+kubectl logs -f <pod-name>
+
+- 여러컨테이너가 있는 경우
+kubectl logs <pod-name> -c <container-name>
+
+- 파드 상세 정보 확인
+  • 	이벤트(Event) 섹션에서 다음과 같은 문제 확인 가능:
+  • 	이미지 풀 실패 ()
+  • 	환경변수 누락
+  • 	포트 충돌
+  • 	프로브 실패 (liveness/readiness)
+kubectl describe pod <pod-name>
+
+자주 발생하는 에러 예시
+| 에러 유형                               | 원인              | 해결 방법
+| CrashLoopBackOff                      | 앱이 계속 죽음      | 로그 확인 후 코드/환경변수 수정
+| ImagePullBackOff                      | 이미지 못 가져옴    | 이미지 이름/태그 확인, Docker Hub 푸시 여부 확인
+| Connection refused                    | DB/Redis 연결 실패 | 호스트명, 포트, 비밀번호 확인
+| BindException: Address already in use | 포트 중복          | server.port
+| ClassNotFoundException                | 빌드 누락          | Gradle 빌드 확인
+
+
+
+
+
+
+
