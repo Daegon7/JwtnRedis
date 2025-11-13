@@ -18,6 +18,22 @@ PS C:\intelij_workspace\JwtnRedis> minikube service demo-app-service
 
 ------------------------------------------------------------------
 
+Minikube 가 죽었을때
+
+minikube update-context
+
+minikube stop
+minikube start
+
+kubectl cluster-info
+kubectl get nodes
+
+PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/deployment.yaml
+PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/service.yaml
+PS C:\intelij_workspace\JwtnRedis> minikube service demo-app-service
+
+------------------------------------------------------------------
+
 소스 수정 후 재배포 전체 과정
 1. 소스 수정
 - IntelliJ에서 Java 코드, GraphQL, Swagger 등 원하는 부분을 수정합니다.
