@@ -15,3 +15,24 @@ Minikube Start
 PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/deployment.yaml
 PS C:\intelij_workspace\JwtnRedis> kubectl apply -f k8s/service.yaml
 PS C:\intelij_workspace\JwtnRedis> minikube service demo-app-service
+
+
+소스 수정 후 재배포 전체 과정
+1. 소스 수정
+- IntelliJ에서 Java 코드, GraphQL, Swagger 등 원하는 부분을 수정합니다.
+2. Gradle 빌드
+- build/libs/에 새로운 .jar 파일 생성됨
+- 예: demo-app-0.0.1-SNAPSHOT.jar
+3. Docker 이미지 재빌드
+docker build -t daegon7/demo-app .
+4. Docker Hub에 푸시
+docker login
+docker push daegon7/demo-app
+5. Kubernetes에 이미지 반영
+🔄 방법 1: Deployment 삭제 후 재적용
+kubectl delete deployment demo-app
+kubectl apply -f k8s/deployment.yaml
+🔄 방법 2: 롤링 재시작 (더 깔끔함)
+kubectl rollout restart deployment demo-app
+6. 서비스 확인
+minikube service demo-app-service
