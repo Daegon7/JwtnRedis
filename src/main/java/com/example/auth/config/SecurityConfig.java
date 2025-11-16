@@ -44,7 +44,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/demo/**",
+                                "/restapi/**",
                                 "/auth/**",
                                 "/user/**",
                                 "/graphql/proxy",
