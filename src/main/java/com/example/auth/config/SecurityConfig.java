@@ -45,6 +45,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/restapi/**",
+                                "/restapi/swagger-ui.html", "/restapi/swagger-ui/**",
+                                "/restapi/v3/api-docs/**", "/restapi/api-docs/**",
                                 "/auth/**",
                                 "/user/**",
                                 "/graphql/proxy",
