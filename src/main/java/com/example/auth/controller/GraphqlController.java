@@ -26,6 +26,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Slf4j
 @Tag(name = "graphql", description = "사용자 관련 API")
 @RestController
@@ -33,6 +35,10 @@ import java.util.Map;
 public class GraphqlController {
 
     private final RestTemplate restTemplate = new RestTemplate();
+
+    // GraphQL Server, application.properties 에서 주입받음
+    @Value("${graphql.endpoint}")
+    private String graphqlEndpoint;
 
     //{ "query": "\n        query {\n          appliances(where: {\n            id: \"test1\"         }) {\n            id\n            name\n            description\n          }\n        }\n      " }
     @Operation(
@@ -90,8 +96,6 @@ public class GraphqlController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
 
-        // GraphQL 서버 주소
-        String graphqlEndpoint = "http://localhost:8081/graphql";
         ResponseEntity<JsonNode> response =
                 restTemplate.postForEntity(graphqlEndpoint, entity, JsonNode.class);
 
